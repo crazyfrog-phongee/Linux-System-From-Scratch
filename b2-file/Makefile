@@ -1,7 +1,7 @@
 .PHONY := clean all
 
 all:
-	gcc -o print-infor-file main.c
+	gcc -o bin/print-infor-file src/main.c
 
 clean:
-	rm -rf print-infor-file
+	rm -rf bin/print-infor-file
