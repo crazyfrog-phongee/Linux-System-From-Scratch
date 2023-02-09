@@ -1,3 +1,5 @@
+.PHONY: all, static, shared, link
+
 all:
 	gcc -c main.c 			-o obj/static/main.o 		-I./inc
 	gcc -c src/helloWorld.c 	-o obj/static/helloWorld.o 	-I./inc
@@ -17,4 +19,3 @@ link:
 	gcc obj/static/main.o -Llib/static -lhello -o bin/statically-linked
 	gcc obj/shared/main.o -Llib/shared -lhello -o bin/dynamically-linked
 
-LD_LIBRARY_PATH=$(pwd)/lib/shared bin/dynamically-linked
