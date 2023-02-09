@@ -23,8 +23,8 @@ int main(int argc, char const *argv[])
 			printf("My PID is %d, my child PID is %d\n", getpid(), child_pid);
 
 			signal(SIGCHLD, func);
-			while(1);
 			printf("The parent process is doing other exercises\n");
+			while(1);
 		}
 	} else 
 	{
