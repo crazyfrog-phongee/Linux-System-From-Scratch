@@ -1,5 +1,7 @@
+.PHONY: all, clean
+
 all:
-	gcc -o test main.c
+	gcc -o test -Werror -Wall  main.c
 
 clean:
 	rm -rf test
