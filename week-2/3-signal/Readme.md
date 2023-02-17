@@ -1,6 +1,6 @@
-#Description: Block SIGINT signal
+# Description: Block SIGINT signal
 
-#Error Resolved:
+## Error Resolved:
     1. Tracing the header files included in signal.h, I found that sigset_t is a struct defined in /usr/include/x86_64-linux-gnu/bits/types/__sigset_t.h as __sigset_t.h and typedefed in /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h:
 
         #define _SIGSET_NWORDS (1024 / (8 * sizeof (unsigned long int)))
@@ -25,9 +25,11 @@
     Secondly, call:
         sigprocmask(SIG_SETMASK, NULL, &oldset);    // Get the current value of signal mask of the process
 
-#References:
-    Resolve (1. and 2. Error Resolved): https://stackoverflow.com/questions/33579854/sigset-t-unix-using-sigprocmask   
-    Source: https://elixir.bootlin.com/linux/v4.2/source/include/linux/signal.h#L40
-            https://man7.org/linux/man-pages/man2/sigprocmask.2.html
+## References:
+### Resolve (1. and 2. Error Resolved): 
+https://stackoverflow.com/questions/33579854/sigset-t-unix-using-sigprocmask   
+### Source: 
+https://elixir.bootlin.com/linux/v4.2/source/include/linux/signal.h#L40
+https://man7.org/linux/man-pages/man2/sigprocmask.2.html
 
 
