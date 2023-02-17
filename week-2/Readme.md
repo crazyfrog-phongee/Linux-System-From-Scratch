@@ -1,0 +1,5 @@
+# ANSWERS:
+
+## 3.1 Giả sử rằng một parent process đã thiết lập một handler cho SIGCHLD và cũng block tín hiệu này. Sau đó, một trong các child process của nó thoát ra và parent process sau đó thực hiện wait() để thu thập trạng thái của child process. Điều gì xảy ra khi parent process bỏ chặn SIGCHLD?  Viết một chương trình để xác minh câu trả lời. 
+
+Answer: Theo em, lúc đầu parrent process đang block tín hiệu SIGCHLD. Sau khi child process exit, nó sẽ gửi tín hiệu SIGCHLD tới parrent process để xóa tiến trình Zombie Process (clear hẳn data còn lại của child process). Tuy nhiên, do parrent process đang block tín hiệu SIGCHLD nên tín hiệu SIGCHLD sẽ được kernel giữ vào hàng chờ xử lý (PENDING). Tín hiệu SIGCHLD chỉ được gửi tới parrent process sau khi parrent process unblocked SIGCHLD. Khi đó, hàm hanlder tương ứng với tín hiệu SIGCHLD mới được thực thi.
