@@ -13,6 +13,7 @@ int main(int argc, char const *argv[])
     pid_t child_pid;
     int status;
 
+    /* Catch and handle the SIGCHILD signal */
     if (signal(SIGCHLD, sig_handler1) == SIG_ERR)
     {
         fprintf(stderr, "Cannot handle SIGCHLD\n");
@@ -24,7 +25,7 @@ int main(int argc, char const *argv[])
 
     sigaddset(&newset, SIGCHLD);
 
-    if (sigprocmask(SIG_SETMASK, &newset, NULL) == 0)
+    if (sigprocmask(SIG_SETMASK, &newset, NULL) == 0) /* Blocking SIGCHLD signal */
     {
         // sigprocmask(SIG_SETMASK, NULL, &oldset);
         // printf("%lu\n", oldset.__val[0]);
@@ -36,7 +37,7 @@ int main(int argc, char const *argv[])
         exit(EXIT_FAILURE);
     }
 
-    child_pid = fork();
+    child_pid = fork(); /* Create a child process */
 
     if (child_pid == -1)
     {
@@ -46,7 +47,7 @@ int main(int argc, char const *argv[])
     else if (child_pid == 0)
     {
         printf("Hello from Child Process\n");
-        while (1);
+        while(1);
     }
     else if (child_pid > 0)
     {
@@ -61,15 +62,24 @@ int main(int argc, char const *argv[])
         else
         {
             printf("Im the parent process, PID child process: %d\n", rv);
+
+            /* Print the end of state of the child process */
+            if (WIFEXITED(status))
+            {
+                printf("The child terminated normally with status %d\n", WEXITSTATUS(status));
+            } else if (WIFSIGNALED(status))
+            {
+                printf("The child was killed by signal, value = %d\n", WTERMSIG(status));
+            }
         }
 
         sigdelset(&newset, SIGCHLD);
 
-        if (sigprocmask(SIG_SETMASK, &newset, NULL) == 0)
+        if (sigprocmask(SIG_SETMASK, &newset, NULL) == 0) /* Unblocking SIGCHLD signal */
         {
-            sigprocmask(SIG_SETMASK, NULL, &oldset);
-            printf("%lu\n", oldset.__val[0]);
-            printf("sigprocmask() called successfully. Main process stop blocking SIGCHLD signal\n");
+            // sigprocmask(SIG_SETMASK, NULL, &oldset);
+            // printf("%lu\n", oldset.__val[0]);
+            printf("sigprocmask() called successfully. Main process stoped blocking SIGCHLD signal\n");
         }
         else
         {
@@ -86,5 +96,5 @@ int main(int argc, char const *argv[])
 void sig_handler1(int signum)
 {
     printf("\nIm signal handler1: %d\n", signum);
-	// exit(EXIT_SUCCESS);
+    // exit(EXIT_SUCCESS);
 }
