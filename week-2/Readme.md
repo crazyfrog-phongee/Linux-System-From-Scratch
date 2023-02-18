@@ -13,7 +13,7 @@ Phổ biến hay sử dụng:
 
 The program is pointed to by pathname. Pathname must be either a binary executable (BIN file), or a script starting with a line of the form: #! interpreter [optional-arg]
 
-* Function call: The exec() family of functions replaces the current process image with a new process image
+* Function call: **The exec() family of functions replaces the current process image with a new process image**
 
 Khi process A đang thực thi và sử dụng họ hàm execute để gọi tới program B, sau khi gọi xong toàn bộ process image của A sẽ được thay thế bởi process image của B. Tuy nhiên, PID vẫn giữ nguyên.
 
@@ -76,6 +76,8 @@ Theo mặc định, giá trị này là 0, đó là lý do tại file core dump 
 4. Chạy lại chương trình 
     `$ ./test`
 Chương trình vẫn tèo giống lúc đầu nhưng bây giờ sẽ có thêm file tên là “core” được tạo ra và nằm trong directory hiện tại của terminal.
+**Regular user dumps caught by Apport write to:**
+    `/var/lib/apport/coredump/`
 
 5. Chạy lại chương trình phát nữa sử dụng gdb kết hợp với file “core”
     `$ gdb test core`
@@ -90,13 +92,11 @@ Answer: Theo em, lúc đầu parrent process đang block tín hiệu SIGCHLD. Sa
 
 Chương trình để xác minh ở dir: week-2/1-process/assignment-1
 
-
-
-
-
-
 # REFERENCES:
 (Question 1.2):
     execl(3) - Linux man page: https://linux.die.net/man/3/execl
     https://linuxhint.com/linux-exec-system-call/
 
+(Question 1.3):
+    https://cppdeveloper.com/c-nang-cao/debug-loi-khi-chuong-trinh-bi-segmentation-fault-tren-linux/
+    https://askubuntu.com/questions/966407/where-do-i-find-the-core-dump-in-ubuntu-16-04lts
