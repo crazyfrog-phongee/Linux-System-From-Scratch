@@ -42,11 +42,11 @@ Answer:
 * Segmentation fault: Chương trình chỉ được phép truy cập đến vùng nhớ thuộc quyền quản lý của nó mà thôi. Bất cứ truy cập vào vùng nhớ nào nằm phạm vi không cho phép của chương trình sẽ dẫn đến lỗi “Segmentation fault”.
 
 * Có 5 lỗi phổ biến dẫn đến lỗi "segmentation fault":
-    Deferencing NULL pointer
-    Dereferencing con trỏ chưa được khởi tạo
-    Dereferencing con trỏ đã bị free hoặc delete
-    Ghi giá trị vượt quá giới hạn của mảng
-    Hàm đệ quy sử dụng hết vùng bộ dành cho stack – còn gọi là “stack overflow”
+1. Deferencing NULL pointer
+2. Dereferencing con trỏ chưa được khởi tạo
+3. Dereferencing con trỏ đã bị free hoặc delete
+4. Ghi giá trị vượt quá giới hạn của mảng
+5. Hàm đệ quy sử dụng hết vùng bộ dành cho stack – còn gọi là “stack overflow”
  
 * Core Dump: Trên Linux, bất cứ khi nào một ứng dụng bị crash (thông thường nhất là gây ra bởi “Segmentation fault”), nó có tùy chọn tạo ra một file lưu vết lỗi gọi là “core dump”.
 Tóm lại, Core dump là một file lưu lại trạng thái của chương trình tại thời điểm mà nó chết. Nó cũng là bản sao lưu lại tất cả các vùng bộ nhớ ảo đã được truy cập bởi chương trình.
@@ -72,9 +72,11 @@ Theo mặc định, giá trị này là 0, đó là lý do tại file core dump 
     `$ gcc main.cpp -o test -g`
 
 -g là option dùng để bật chế độ debug với gdb.
+
 4. Chạy lại chương trình 
     `$ ./test`
 Chương trình vẫn tèo giống lúc đầu nhưng bây giờ sẽ có thêm file tên là “core” được tạo ra và nằm trong directory hiện tại của terminal.
+
 5. Chạy lại chương trình phát nữa sử dụng gdb kết hợp với file “core”
     `$ gdb test core`
 Tuy nhiên, nếu chắc chắn nguyên nhân gốc nằm ở code logic của chương trình. Trong trường hợp này hãy dùng lệnh “backtrace” của gdb để xem thêm các frame khác trong callstack:
