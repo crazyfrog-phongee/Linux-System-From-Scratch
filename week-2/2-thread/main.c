@@ -30,6 +30,7 @@ void print_signal_mask(unsigned long int num)
 	printf("\n");
 }
 
+/* Function check the specific signal of the pending signal. */
 void check_pending(pthread_t tid, int sig, char *signame ) {
     sigset_t sigset;
 
@@ -47,24 +48,22 @@ void *thread_handle1(void *arg)
 
     sigset_t *set = (sigset_t *)(arg);
     sigset_t sig_pending;
+    int rv;
 
     sigaddset(set, SIGUSR1);
     sigprocmask(SIG_BLOCK, set, NULL);
 
-    // print_signal_mask(set->__val[0]);
-
     for(;;)
     {
-
-        if (sigpending(&sig_pending) != 0)
-            perror("sigpending() error\n" );
+        if ((rv = sigpending(&sig_pending)))
+            handle_error_en(rv, "sigpending");
         
         if (sig_pending.__val[0] == 0)
             printf("ThreadID1: No signals are pending\n");
         else 
         {
             printf("ThreadID1: Signals are pending\n");
-            print_signal_mask(sig_pending.__val[0]);
+            print_signal_mask(sig_pending.__val[0]);    /* Print current signal pending */
         }
 
         sleep(5);
@@ -77,23 +76,22 @@ void *thread_handle2(void *arg)
 
     sigset_t *set = (sigset_t *)(arg);
     sigset_t sig_pending;
+    int rv;
 
     sigaddset(set, SIGUSR2);
     sigprocmask(SIG_BLOCK, set, NULL);
 
-    // print_signal_mask(set->__val[0]);
-
     for(;;)
     {
-        if (sigpending(&sig_pending) != 0)
-            perror("sigpending() error\n" );
+        if ((rv = sigpending(&sig_pending)))
+            handle_error_en(rv, "sigpending");
 
         if (sig_pending.__val[0] == 0)
             printf("ThreadID2: No signals are pending\n");
         else 
         {
             printf("ThreadID2: Signals are pending\n");
-            print_signal_mask(sig_pending.__val[0]);
+            print_signal_mask(sig_pending.__val[0]);    /* Print current signal pending */
         }
 
         sleep(2);

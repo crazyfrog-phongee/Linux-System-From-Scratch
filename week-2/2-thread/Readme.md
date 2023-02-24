@@ -18,6 +18,12 @@ Trong vòng lặp while(true) của các thread, kiểm tra các signal pending 
 
 # THEORY:
 
+## Thread and POSIX Thread, Management:
+
+* REF: 
+    https://vimentor.com/en/lesson/gioi-thieu-ve-thread
+    https://vimentor.com/en/lesson/quan-ly-posix-thread-1
+
 ## Process's signal disposition
 
 ### process's signal disposition: similar to the signal's handler
@@ -25,7 +31,9 @@ Trong vòng lặp while(true) của các thread, kiểm tra các signal pending 
 
 * REF: 
 
-`https://csresources.github.io/SystemProgrammingWiki/SystemProgramming/Signals,-Part-2:-Pending-Signals-and-Signal-Masks/`
+    https://csresources.github.io/SystemProgrammingWiki/SystemProgramming/Signals-Part-2:-Pending-Signals-and-Signal-Masks/
+
+    https://csresources.github.io/SystemProgrammingWiki/SystemProgramming/Signals,-Part-3:-Raising-signals/
 
 ### Pending state
 
@@ -60,3 +68,7 @@ Trong vòng lặp while(true) của các thread, kiểm tra các signal pending 
 
 * returns a set up of signals that are pending for delivery to the call thread (i.e., the signals which have been raised while blocked).  The mask of pending signals is returned in set.
 * RETURN VALUE: 0 on sucess, -1 on failure
+
+* REF:
+    https://man7.org/linux/man-pages/man2/sigpending.2.html
+    https://www.ibm.com/docs/en/zos/2.2.0?topic=functions-sigpending-examine-pending-signals
