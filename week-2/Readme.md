@@ -136,7 +136,8 @@ Các đặc tính của POSIX real-time signals:
 * Process (tiến trình): là một chương trình đang được thực thi và sử dụng tài nguyên của hệ thống
 * Thread (luồng): ở tầng app, được gọi là user thread/lightweight thread, được quản lý độc lập bởi một bộ lập lịch (Schedular). Nó được kiểm soát ở user-space.
 
-* Ref: https://viblo.asia/p/019-lightweight-thread-va-threading-model-naQZRQ1PKvx 
+* Ref: 
+    https://viblo.asia/p/019-lightweight-thread-va-threading-model-naQZRQ1PKvx 
 
 ## 2. Context Switching
 
@@ -209,11 +210,11 @@ Cụ thể, quá trình đó như thế nào? Theo em tìm hiểu, quá trình �
 
 * Process:
 
-    Running or Runnable (R)
-    Uninterruptible Sleep (D)
-    Interruptable Sleep (S)
-    Stopped (T)
-    Zombie (Z)
+    1. Running or Runnable (R)
+    2. Uninterruptible Sleep (D)
+    3. Interruptable Sleep (S)
+    4. Stopped (T)
+    5. Zombie (Z)
 
 ### Khía cạnh Terminate:
 * Thread:
@@ -298,6 +299,7 @@ Một trong những điểm mạnh của thread là chia sẻ dữ liệu với 
 * Atomic/Nonatomic:
 
     Atomic: Tại một thời điểm chỉ có một thread duy nhất được truy cập vào tài nguyên được chia sẻ (shared resource) -> An toàn
+
     Nonatomic: Nhiều threads có thể truy cập vào shared resource cùng một thời điểm -> Không an toàn
 
 * Critical Section: đoạn code truy cập vào vùng tài nguyên được chia sẻ giữa (shared resource) giữa các threads và **việc thực thi của nó nằm trong bối cảnh atomic**. Tức là thời điểm đoạn code được thực thi sẽ không bị gián đoạn bởi bất cứ một thread nào truy cập đồng thời vào shared resource đó.
@@ -330,4 +332,5 @@ Một trong những điểm mạnh của thread là chia sẻ dữ liệu với 
 
     **CV thường giải quyết bài toán producer – consumer, một tình huống thường xuyên gặp trong lập trình multi-thread, giúp cho các thread giao tiếp và sử dụng tài nguyên CPU hiệu quả hơn.**
 
-    REF: https://vimentor.com/vi/lesson/thread-synchronization-bien-dieu-kien 
+    REF: 
+        https://vimentor.com/vi/lesson/thread-synchronization-bien-dieu-kien 
