@@ -25,7 +25,7 @@ Nếu process A đang thực thi có nhiều threads, các threads đó sẽ b�
 
 * Advanced Expansion: Combining fork() and exec() system calls
 
-* Bản chất khi lệnh system() hoạt động:
+### Bản chất khi lệnh system() hoạt động:
     Under the header file: stdlib.h
 
     int system(const char *command);
