@@ -123,9 +123,16 @@ Các đặc tính của POSIX real-time signals:
 * Nếu cả multiple real-time and standard signals are queued to a process, the standard signals are delivered first (phù hợp với concept that the lower numbered signals are delivered first)
 * Về khía cạnh sending signals:
     standard signals: using system call kill()
-    real-time signals: using sigqueue()\
-    
+    real-time signals: using sigqueue()
+
 **sigqueue() khác với kill() ở chỗ: a value or a pointer can be sent along with the signal. The value or the pointer can be retrieved by the receiving process from the second para of the real-time signal handler (the pointer to siginfo_t). The value or the pointer is stored in si_value or si_ptr members respectively.**
+
+* Về khía cạnh change the disposition (signal's handler)
+    A process can change the disposition of a signal using sigaction(2) or signal(2).  (The latter is less portable when establishing a signal handler
+
+    Common: 
+        `kill() --- signal()`
+        `sigqueue() --- sigaction()`
 
 ### REF: 
     https://www.softprayog.in/programming/posix-real-time-signals-in-linux
