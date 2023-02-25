@@ -1,4 +1,4 @@
-# ANSWERS:
+# DESCRIPTION: THEORY EXERCISES WEEK 2-3
 
 ## 1.2 Điều gì xảy ra khi chúng ta sử dụng họ hàm execute (execl/exevp/exepv)? Giải thích và viết một chương trình để xác minh câu trả lời. Sau đó hãy cho biết bản chất khi lệnh system() hoạt động như thế nào.
 
@@ -130,3 +130,222 @@ Các đặc tính của POSIX real-time signals:
 ### REF: 
     https://www.softprayog.in/programming/posix-real-time-signals-in-linux
     https://learning.oreilly.com/library/view/understanding-the-linux/0596000022/0596000022_ch09-21982.html
+
+## 1. Program, Process and Thread
+* Program (chương trình): là nhóm các câu lệnh thực thi một nhiệm vụ cụ thể, được thể hiển bằng các file thực thi và nằm trên ổ cứng máy tính
+* Process (tiến trình): là một chương trình đang được thực thi và sử dụng tài nguyên của hệ thống
+* Thread (luồng): ở tầng app, được gọi là user thread/lightweight thread, được quản lý độc lập bởi một bộ lập lịch (Schedular). Nó được kiểm soát ở user-space.
+
+* Ref: https://viblo.asia/p/019-lightweight-thread-va-threading-model-naQZRQ1PKvx 
+
+## 2. Context Switching
+
+### Khái niệm: Context switch (đôi khi được gọi là process switch hoặc task switch) là quá trình lưu trữ trạng thái của CPU hoặc của một thread để có thể tiếp tục thực thi sau đó. Việc lưu trữ này cho phép nhiều tiến trình có thể cùng thực thi trên một CPU vật lý và là chức năng quan trọng của các hệ điều hành đa nhiệm.
+
+Cụ thể, quá trình đó như thế nào? Theo em tìm hiểu, quá trình đó xảy ra như sau:
+
+### Đối với Thread Switching Context:
+* Đối với Linux Kernel, context switch thread liên quan tới các thanh ghi (registers), con trỏ ngăn xếp (stack pointer) và con trỏ chương trình. 
+* Khi luân chuyển thread, CPU phải làm công việc luân chuyển dữ liệu của thread trước nạp vào thanh ghi ra bộ nhớ đệm, và nạp dữ liệu của thread mới vào thanh ghi. Việc luân chuyển dữ liệu tham số vào và ra khỏi thanh ghi và bộ đệm chính là Context Switch
+* The cost of thread-to-thread switching is about the same as the cost of entering and exiting the kernel.
+* Nếu context switch xảy ra giữa 2 thread thuộc 2 tiến trình (process) khác nhau sẽ phức tạp và tốn thời gian hơn.
+* Ngoài chi phí cho việc lưu trữ/phục hồi trạng thái của các thread, hệ điều hành cũng phải tốn chi phí cho bộ lập lịch (task scheduler) để chọn lựa thread tiếp theo được đưa vào xử lý.
+* Context switching xảy ra ở application, dễ dàng kiểm soát hơn, cost dành cho nó cũng giảm đi nhiều so với OS thread và process.
+* Thread context switching (chuyển đổi ngữ cảnh thread) sẽ nhẹ nhàng hơn process context switch (chuyển đổi ngữ cảnh processs) bởi các threads trong cùng một ứng dụng cùng chia sẻ vùng nhớ cho phép thread có thể đọc và ghi cùng một cấu trúc dữ liệu và biến với thread anh em.
+
+### Đối với Thread Switching Context:   
+* a type of context switching where we switch one process with another process
+* switching of all the process resources with those needed by a new process, meaning switching the memory address space. This includes memory addresses, page tables, and kernel resources, caches in the processor.
+
+### REF:
+    https://tldp.org/LDP/LG/issue23/flower/context.html 
+    https://codelearn.io/sharing/da-luong-nhanh-hay-cham 
+    https://techmaster.vn/posts/35265/target=%22_blank%22 
+
+## 3. So sánh một vài khía cạnh Thread và Process
+
+### Khía cạnh Context Switching:
+* Thread: 
+    Switching PC, registers and SP 
+
+**Thread nhanh hơn so với Process vì Thread bản chất là 1 lightweight process, nhẹ hơn process ban đầu.**
+
+* Process:
+    Switching the memory address space. This includes memory addresses, page tables, and kernel resources, caches in the processor.
+
+### Khía cạnh Shared Memory
+* Thread: 
+    Chung không gian bộ nhớ toàn cục (không gian bộ nhớ của process)
+* Process: 
+    Mỗi process nằm trên không gian bộ nhớ riêng biệt (virtual memory address) dẫn đến chia sẻ dữ liệu giữa các process là khó khăn hơn. Thông qua cơ chế giao tiếp IPC
+
+### Khía cạnh ID
+* Thread: 
+    ThreadID là một cấu trúc dữ liệu struct (pthread_t) dẫn đến in ra TID khó hơn. 
+    
+    **ThreadID là duy nhất trong một process.**
+
+* Process:
+    PID là một số nguyên – int (pid_t) dẫn đến in ra PID dễ hơn.
+
+    **PID là duy nhất trên toàn hệ thống.**
+
+### Khía cạnh Blocked
+* Thread:
+    Nếu 1 thread bị block, các thread khác vẫn hoạt động bình thường.
+* Process:
+    Nếu 1 process bị block, các process khác vẫn hoạt động bình thường.
+
+### Khía cạnh Crashed:
+* Thread: 
+    Nếu một thread bị crashed, các threads khác chấm dứt ngay lập tức.
+* Process:
+    Nếu một process bị crashed, process khác vẫn thực thi bình thường.
+
+### Khía cạnh State:
+* Thread:
+
+    Trạng thái mặc định là joinable, tức là khi thread kết thúc thì một thread khác có thể thu được giá trị trả về của thread đó thôn qua pthread_join().
+
+    Khi thread kết thúc, nó chuyển qua trạng thái thread zombie (xử lý tương tự zombie process). Nếu số lượng thread zombie ngày càng lớn, sẽ không thể tạo thêm thread được nữa.
+
+    Trạng thái detached, ta không thể dùng pthread_join() để thu được trạng thái kết thúc của thread, và thread không thể trở về trạng thái joinable.
+
+* Process:
+
+    Running or Runnable (R)
+
+    Uninterruptible Sleep (D)
+
+    Interruptable Sleep (S)
+
+    Stopped (T)
+
+    Zombie (Z)
+
+### Khía cạnh Terminate:
+* Thread:
+    Bất cứ một thread nào gọi hàm exit(), hoặc main thread kết thúc thì tất cả các thread còn lại kết thúc ngay lập tức.
+
+* Process:
+    Bất kỳ process cha hay con gọi hàm exit(), các process khác vẫn sẽ hoạt động bình thường. Tùy thuộc vào parent process hay child process kết thúc trước mà rơi vào các trường hợp Orphane hoặc Zombie
+
+### Khía cạnh Sending Signals:
+* Thread:
+    pthread_kill();
+
+* Process:
+    systemcall kill();
+
+## 4. Management
+
+### ID:
+* Thread:
+
+    int pthread_self(void);
+    
+    int pthread_equal(pthread_t tid1, pthread_t tid2);
+
+* Process:
+
+    int getpid(void);
+
+    int getppid(void);
+
+### Create:
+* Thread:
+
+    int pthread_create(pthread_t *restrict thread, const pthread_attr_t *restrict attr, void *( *start_routine)(void *), void *restrict arg ))
+
+* Process:
+
+    system call fork();
+
+### Terminate:
+* Thread:
+
+    int pthread_exit(void *retval);
+
+    Đối số là giá trị trả về từ thread đang gọi hàm này.
+
+    int pthread_cancel(pthread_t thread);
+
+    Bất cứ một thread nào gọi hàm exit(), hoặc main thread kết thúc thì tất cả các thread còn lại kết thúc ngay lập tức.
+
+* Process:
+    Kết thúc bình thường: `system call _exit();` `void exit(int status);`
+
+        0: on success
+        ≠ 0: on failure
+
+    Kết thúc bất thường: `kill command`
+
+### Get exit value
+* Thread:
+
+    int pthread_join(pthread_t thread, void **retval);
+
+    Truy cập bởi thread cha đang đợi thread này kết thúc và có thể được truy cập bởi một thread khác. Tại thời điểm được gọi, bị block
+
+    Free dữ liệu còn lại của trạng thái zombie
+
+* Process: 
+    
+    system call wait();
+
+Tiến trình cha có thể thu được trạng thái kết thúc của tiến trình con.
+
+    system call waitpid();
+
+Giải quyết vấn đề multi children, theo dõi child process cụ thể. Tại thời điểm được gọi, bị block
+
+### Detaching:
+* Thread: 
+
+    int pthread_detached(pthread_t thread);
+
+Dùng trong trường hợp không quan tâm đến trạng thái kết thúc của thread mà chỉ cần hệ thống tự động clean and remove.
+
+## 5. Synchronous and Asynchronous
+Một trong những điểm mạnh của thread là chia sẻ dữ liệu với nhau thông qua các biến global -> 	Dẫn đến vấn đề đồng bộ (Thread Synchronization)
+
+### Các khái niệm quan trọng trong Thread Synchoronization:
+* Shared resource: Tài nguyên được chia sẻ giữa các thread.
+
+* Atomic/Nonatomic:
+
+    Atomic: Tại một thời điểm chỉ có một thread duy nhất được truy cập vào tài nguyên được chia sẻ (shared resource) -> An toàn
+
+    Nonatomic: Nhiều threads có thể truy cập vào shared resource cùng một thời điểm -> Không an toàn
+
+* Critical Section: đoạn code truy cập vào vùng tài nguyên được chia sẻ giữa (shared resource) giữa các threads và **việc thực thi của nó nằm trong bối cảnh atomic**. Tức là thời điểm đoạn code được thực thi sẽ không bị gián đoạn bởi bất cứ một thread nào truy cập đồng thời vào shared resource đó.
+
+### Xử lý vấn đề bất đồng bộ:
+* Sử dụng kỹ thuật Mutex
+
+    Khái niệm: Mutex (mutual exclusion) là một kĩ thuật được sử dụng để đảm bảo rằng tại một thời điểm chỉ có 1 thread mới có quyền truy cập vào các tài nguyên dùng chung (shared resources).
+
+    Triển khai mutex:
+    
+        1. Khởi tạo khóa mutex
+        2. Thực hiện khóa mutex cho các shared resource trước khi vào critical section. Thực hiện truy cập vào shared resources
+        3. Mở khóa mutex
+
+* Sử dụng kỹ thuật Condition Variables
+
+    Trên Linux có 2 loại waiting events: Busy Waiting/Sleep Waiting: 
+    
+        Đối với BW: polling – thăm dò (ví dụ như khoảng thời gian t ra kiểm tra hộp thư 1 lần).
+    
+        Đối với SW: (khi có thư, người đưa thư tự đưa đến tận răng)
+    
+    Khái niệm: Một condition variable được sử dụng để thông báo tới một thead khác về sự thay đổi của một shared variable và cho phép một thread khác block cho tới khi nhận được thông báo.
+
+    Triển khai CV:
+        1. Allocated
+        2. Signaling: `pthread_cond_signal()`
+        3. Waiting: `pthread_cond_waiting()`
+
+    **CV thường giải quyết bài toán producer – consumer, một tình huống thường xuyên gặp trong lập trình multi-thread, giúp cho các thread giao tiếp và sử dụng tài nguyên CPU hiệu quả hơn.**
+
+    REF: https://vimentor.com/vi/lesson/thread-synchronization-bien-dieu-kien 
