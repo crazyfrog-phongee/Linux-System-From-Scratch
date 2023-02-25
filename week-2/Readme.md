@@ -182,12 +182,10 @@ Cụ thể, quá trình đó như thế nào? Theo em tìm hiểu, quá trình �
 ### Khía cạnh ID
 * Thread: 
     ThreadID là một cấu trúc dữ liệu struct (pthread_t) dẫn đến in ra TID khó hơn. 
-    
     **ThreadID là duy nhất trong một process.**
 
 * Process:
     PID là một số nguyên – int (pid_t) dẫn đến in ra PID dễ hơn.
-
     **PID là duy nhất trên toàn hệ thống.**
 
 ### Khía cạnh Blocked
@@ -206,21 +204,15 @@ Cụ thể, quá trình đó như thế nào? Theo em tìm hiểu, quá trình �
 * Thread:
 
     Trạng thái mặc định là joinable, tức là khi thread kết thúc thì một thread khác có thể thu được giá trị trả về của thread đó thôn qua pthread_join().
-
     Khi thread kết thúc, nó chuyển qua trạng thái thread zombie (xử lý tương tự zombie process). Nếu số lượng thread zombie ngày càng lớn, sẽ không thể tạo thêm thread được nữa.
-
     Trạng thái detached, ta không thể dùng pthread_join() để thu được trạng thái kết thúc của thread, và thread không thể trở về trạng thái joinable.
 
 * Process:
 
     Running or Runnable (R)
-
     Uninterruptible Sleep (D)
-
     Interruptable Sleep (S)
-
     Stopped (T)
-
     Zombie (Z)
 
 ### Khía cạnh Terminate:
@@ -243,13 +235,11 @@ Cụ thể, quá trình đó như thế nào? Theo em tìm hiểu, quá trình �
 * Thread:
 
     int pthread_self(void);
-    
     int pthread_equal(pthread_t tid1, pthread_t tid2);
 
 * Process:
 
     int getpid(void);
-
     int getppid(void);
 
 ### Create:
@@ -265,16 +255,13 @@ Cụ thể, quá trình đó như thế nào? Theo em tìm hiểu, quá trình �
 * Thread:
 
     int pthread_exit(void *retval);
-
     Đối số là giá trị trả về từ thread đang gọi hàm này.
 
     int pthread_cancel(pthread_t thread);
-
     Bất cứ một thread nào gọi hàm exit(), hoặc main thread kết thúc thì tất cả các thread còn lại kết thúc ngay lập tức.
 
 * Process:
     Kết thúc bình thường: `system call _exit();` `void exit(int status);`
-
         0: on success
         ≠ 0: on failure
 
@@ -284,20 +271,16 @@ Cụ thể, quá trình đó như thế nào? Theo em tìm hiểu, quá trình �
 * Thread:
 
     int pthread_join(pthread_t thread, void **retval);
-
     Truy cập bởi thread cha đang đợi thread này kết thúc và có thể được truy cập bởi một thread khác. Tại thời điểm được gọi, bị block
-
     Free dữ liệu còn lại của trạng thái zombie
 
 * Process: 
     
     system call wait();
-
-Tiến trình cha có thể thu được trạng thái kết thúc của tiến trình con.
+    Tiến trình cha có thể thu được trạng thái kết thúc của tiến trình con.
 
     system call waitpid();
-
-Giải quyết vấn đề multi children, theo dõi child process cụ thể. Tại thời điểm được gọi, bị block
+    Giải quyết vấn đề multi children, theo dõi child process cụ thể. Tại thời điểm được gọi, bị block
 
 ### Detaching:
 * Thread: 
@@ -315,7 +298,6 @@ Một trong những điểm mạnh của thread là chia sẻ dữ liệu với 
 * Atomic/Nonatomic:
 
     Atomic: Tại một thời điểm chỉ có một thread duy nhất được truy cập vào tài nguyên được chia sẻ (shared resource) -> An toàn
-
     Nonatomic: Nhiều threads có thể truy cập vào shared resource cùng một thời điểm -> Không an toàn
 
 * Critical Section: đoạn code truy cập vào vùng tài nguyên được chia sẻ giữa (shared resource) giữa các threads và **việc thực thi của nó nằm trong bối cảnh atomic**. Tức là thời điểm đoạn code được thực thi sẽ không bị gián đoạn bởi bất cứ một thread nào truy cập đồng thời vào shared resource đó.
@@ -336,12 +318,12 @@ Một trong những điểm mạnh của thread là chia sẻ dữ liệu với 
     Trên Linux có 2 loại waiting events: Busy Waiting/Sleep Waiting: 
     
         Đối với BW: polling – thăm dò (ví dụ như khoảng thời gian t ra kiểm tra hộp thư 1 lần).
-    
         Đối với SW: (khi có thư, người đưa thư tự đưa đến tận răng)
     
     Khái niệm: Một condition variable được sử dụng để thông báo tới một thead khác về sự thay đổi của một shared variable và cho phép một thread khác block cho tới khi nhận được thông báo.
 
     Triển khai CV:
+    
         1. Allocated
         2. Signaling: `pthread_cond_signal()`
         3. Waiting: `pthread_cond_waiting()`
