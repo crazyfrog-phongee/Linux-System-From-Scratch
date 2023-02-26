@@ -20,6 +20,8 @@ Trong vòng lặp while(true) của các thread, kiểm tra các signal pending 
 
 ## Thread and POSIX Thread, Management:
 
+Khi chạy multi – thread, nếu một trong các thread gọi tới hàm exit() trong khi các thread khác vẫn đang hoạt động thì dẫn tới lỗi “Memory leak”, cụ thể là trạng thái possibly lost do Valgrind report.
+
 * REF: 
     https://vimentor.com/en/lesson/gioi-thieu-ve-thread
     https://vimentor.com/en/lesson/quan-ly-posix-thread-1
