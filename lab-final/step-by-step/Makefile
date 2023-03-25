@@ -2,7 +2,7 @@ TITLE_COLOR = \033[33m
 NO_COLOR = \033[0m
 FLAGS = -Wall -std=c11 -Werror -fdiagnostics-color=auto
 DEBUG_LVL = 2
-GATEWAY_CONFIG = -DSET_MIN_TEMP=10 -DSET_MAX_TEMP=20 -DTIMEOUT=60 -DMAX_CONN=10 -DDEBUG_LVL=$(DEBUG_LVL)
+GATEWAY_CONFIG = -DSET_MIN_TEMP=10 -DSET_MAX_TEMP=20 -DTIMEOUT=15 -DMAX_CONN=10 -DDEBUG_LVL=$(DEBUG_LVL)
 NODE_CONFIG = -DLOOPS=3600 -DLOG_SENSOR_DATA
 PORT = 1234
 
@@ -11,17 +11,17 @@ all: clean-all all_libs sensor_gateway
 
 # When trying to compile one of the executables, first look for its .c files
 # Then check if the libraries are in the lib folder
-sensor_gateway: main.c sbuffer.c lib/libdplist.so lib/libtcpsock.so
+sensor_gateway: main.c sbuffer.c connmgr.c lib/libdplist.so lib/libtcpsock.so
 	@echo "$(TITLE_COLOR)\n***** CPPCHECK *****$(NO_COLOR)"
 	cppcheck --enable=all --suppress=missingIncludeSystem main.c connmgr.c datamgr.c sensor_db.c sbuffer.c
 	@echo "$(TITLE_COLOR)\n***** COMPILING sensor_gateway *****$(NO_COLOR)"
 	gcc -c -g main.c      $(GATEWAY_CONFIG) -o main.o      $(FLAGS)
 	gcc -c -g sbuffer.c   $(GATEWAY_CONFIG) -o sbuffer.o   $(FLAGS)
-	# gcc -c -g connmgr.c   $(GATEWAY_CONFIG) -o connmgr.o   $(FLAGS)
+	gcc -c -g connmgr.c   $(GATEWAY_CONFIG) -o connmgr.o   $(FLAGS)
 	# gcc -c -g datamgr.c   $(GATEWAY_CONFIG) -o datamgr.o   $(FLAGS)
 	# gcc -c -g sensor_db.c $(GATEWAY_CONFIG) -o sensor_db.o $(FLAGS)
 	@echo "$(TITLE_COLOR)\n***** LINKING sensor_gateway *****$(NO_COLOR)"
-	gcc -g main.o sbuffer.o -ldplist -ltcpsock -lsqlite3 -lpthread -o sensor_gateway -Wall -L./lib -Wl,-rpath=./lib -fdiagnostics-color=auto
+	gcc -g main.o sbuffer.o connmgr.o -ldplist -ltcpsock -lsqlite3 -lpthread -o sensor_gateway -Wall -L./lib -Wl,-rpath=./lib -fdiagnostics-color=auto
 
 file_creator: file_creator.c
 	@echo "$(TITLE_COLOR)\n***** COMPILE & LINKING file_creator *****$(NO_COLOR)"

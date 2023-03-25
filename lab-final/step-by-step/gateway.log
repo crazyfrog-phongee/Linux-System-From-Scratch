@@ -1,1 +1,6 @@
-0 1679530010 (Pipe end of pipe): Pipe between parent (30680) and child (30695) terminated normally
+0 1679737947 Connection Manager: started server successfully
+1 1679737954 Connection Manager: new connection received
+2 1679737963 Connection Manager: lost connection with
+3 1679737963 Connection Manager: connection to 15 closed
+4 1679737978 Connection Manager: stopped successfully
+5 1679737978 (Pipe end of pipe): Pipe between parent (39571) and child (39572) terminated normally

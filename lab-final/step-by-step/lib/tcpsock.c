@@ -87,9 +87,7 @@ int tcp_passive_open(tcpsock_t **sock, int port)
     /**
      * Step 3: listen() marks the socket referred to by sockfd as a PASSIVE SOCKET, that is, as a socket that will be used
      * to accept incoming connection requests
-     *
      */
-
     result = listen(s->sd, MAX_PENDING); /* Listen for connections on a socket */
     TCP_DEBUG_PRINTF(result == -1, "Listen() failed with errno = %d [%s]", errno, strerror(errno));
     TCP_ERR_HANDLER(result != 0, free(s); return TCP_SOCKOP_ERROR);
@@ -192,7 +190,7 @@ int tcp_wait_for_connection(tcpsock_t *socket, tcpsock_t **new_socket)
     TCP_ERR_HANDLER(s->sd == -1, free(s); return TCP_SOCKOP_ERROR);
 
     /* Storing the infor of client */
-    p = inet_ntoa(addr.sin_addr); // returns addr to statically allocated buffer
+    p = inet_ntoa(addr.sin_addr); /* returns addr to statically allocated buffer */ 
     s->ip_addr = (char *)malloc(sizeof(char) * CHAR_IP_ADDR_LENGTH);
     TCP_ERR_HANDLER(s->ip_addr == NULL, free(s); return TCP_MEMORY_ERROR);
     s->ip_addr = strncpy(s->ip_addr, p, CHAR_IP_ADDR_LENGTH);

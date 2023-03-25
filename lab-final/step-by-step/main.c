@@ -15,6 +15,7 @@
 #include "lib/tcpsock.h"
 #include "lib/dplist.h"
 #include "sbuffer.h"
+#include "connmgr.h"
 
 /**
  * Global Variables Definition
@@ -131,24 +132,24 @@ int main(int argc, char const *argv[])
 
     /* Initialize shared data buffer */
     sbuffer_init(&buffer);
-    pthread_rwlock_init(&sbuffer_open_rwlock);
+    pthread_rwlock_init(&sbuffer_open_rwlock, NULL);
     pthread_rwlock_init(&storagemgr_failed_rwlock, NULL);
     pthread_mutex_init(&connmgr_drop_conn_mutex, NULL);
 
     /* Create 3 threads: the connection, the data and the storage manager threads. */
-    ret = pthread_create(&thread_id[0], NULL, connection_manager, &port_no);
+    ret = pthread_create(&pthread_id[0], NULL, connection_manager, &server_port);
     SYSCALL_ERROR(ret);
     // ret = pthread_create(&thread_id[1], NULL, data_manager, NULL);
     // SYSCALL_ERROR(ret);
     // rv = pthread_create(&thread_id[2], NULL, storage_manager, NULL);
     // SYSCALL_ERROR(ret);
 
-    for(int i = 0; i < NUM_THREADS; i++) pthread_join(threads[i], &exit_codes[i]); /* blocks until all threads terminate */ 
+    for(int i = 0; i < NUM_THREADS; i++) pthread_join(pthread_id[i], &exit_codes[i]); /* blocks until all threads terminate */ 
     
-    #if (DEBUG_LVL > 0)
-    printf("Threads stopped. Cleaning up\nThread exit result:\n"CHILD_POS"Data Manager: %d\n"CHILD_POS"Storage Manager %d\n"CHILD_POS"Connection Manager: %d\n", *((int *) exit_codes[0]), *((int *) exit_codes[1]), *((int *) exit_codes[2]));
-    fflush(stdout);
-    #endif
+    // #if (DEBUG_LVL > 0)
+    // printf("Threads stopped. Cleaning up\nThread exit result:\n"CHILD_POS"Data Manager: %d\n"CHILD_POS"Storage Manager %d\n"CHILD_POS"Connection Manager: %d\n", *((int *) exit_codes[0]), *((int *) exit_codes[1]), *((int *) exit_codes[2]));
+    // fflush(stdout);
+    // #endif
 
     close(fds[1]); /* First, let threads terminate, then shut down IPC pipe -> ensures all data in pipe is written before closing */ 
     wait(NULL); /* Wait on child process changing state */
@@ -177,4 +178,30 @@ void *connection_manager(void *arg)
         fflush(stdout);
     #endif
 
+    int *retval = (int*) malloc(sizeof(int));
+    *retval = THREAD_SUCCESS;
+
+    connmgr_init_arg_t connmgr_init_arg = {
+        .sbuffer_rwlock = &sbuffer_open_rwlock,
+        .pipe_mutex = &ipc_pipe_mutex,
+        .storagemgr_failed_rwlock = &storagemgr_failed_rwlock,
+        .connmgr_drop_conn_mutex = &connmgr_drop_conn_mutex,
+        .connmgr_sensor_to_drop = &connmgr_sensor_to_drop,
+        .sbuffer_flag = &sbuffer_open,
+        .storagemgr_fail_flag = &storagemgr_failed,
+        .ipc_pipe_fd = fds,
+        .status = retval,
+    };
+    connmgr_init(&connmgr_init_arg);
+    connmgr_listen(*((int*)arg), &buffer);
+    int ret_listen = *retval; // in between these calls, the retval maybe different. it maybe interesting to know the value in both
+    connmgr_free();
+    *retval = (ret_listen != THREAD_SUCCESS && ret_listen != *retval) ? ret_listen: *retval; // in case the thread value was affected by listen and then free, show the first
+    
+    #if (DEBUG_LVL > 0)
+        printf("Connection Manager is stopped\n");
+        fflush(stdout);
+    #endif
+
+    pthread_exit(retval);
 }
