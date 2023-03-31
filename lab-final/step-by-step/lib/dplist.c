@@ -333,8 +333,7 @@ dplist_node_t *dpl_get_reference_if_member(dplist_t *list, dplist_node_t *refere
     if (list->head == NULL || reference == NULL)
         return NULL;
     dplist_node_t *dummy;
-    for (dummy = list->head; dummy->next != NULL && reference != dummy; dummy = dummy->next)
-        ;                                                              // Goes through the list until end is reached or the element is found
+    for (dummy = list->head; dummy->next != NULL && reference != dummy; dummy = dummy->next);                                                              // Goes through the list until end is reached or the element is found
     return (dummy->next == NULL && reference != dummy) ? NULL : dummy; // If reference not in list, returns NULL. Otherwise returns matching node
 }
 

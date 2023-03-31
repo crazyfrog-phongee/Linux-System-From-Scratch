@@ -16,6 +16,7 @@
 #include "lib/dplist.h"
 #include "sbuffer.h"
 #include "connmgr.h"
+#include "datamgr.h"
 
 /**
  * Global Variables Definition
@@ -38,6 +39,7 @@ static int storagemgr_failed = 0;
 static pthread_rwlock_t storagemgr_failed_rwlock;
 
 void *connection_manager(void *arg);
+void *data_manager(void *arg);
 
 int main(int argc, char const *argv[])
 {
@@ -139,11 +141,10 @@ int main(int argc, char const *argv[])
     /* Create 3 threads: the connection, the data and the storage manager threads. */
     ret = pthread_create(&pthread_id[0], NULL, connection_manager, &server_port);
     SYSCALL_ERROR(ret);
-    // ret = pthread_create(&thread_id[1], NULL, data_manager, NULL);
-    // SYSCALL_ERROR(ret);
-    // rv = pthread_create(&thread_id[2], NULL, storage_manager, NULL);
-    // SYSCALL_ERROR(ret);
-
+    ret = pthread_create(&pthread_id[1], NULL, data_manager, NULL);
+    SYSCALL_ERROR(ret);
+    rv = pthread_create(&pthread_id[2], NULL, storage_manager, NULL);
+    SYSCALL_ERROR(ret);
     for(int i = 0; i < NUM_THREADS; i++) pthread_join(pthread_id[i], &exit_codes[i]); /* blocks until all threads terminate */ 
     
     // #if (DEBUG_LVL > 0)
@@ -205,3 +206,43 @@ void *connection_manager(void *arg)
 
     pthread_exit(retval);
 }
+
+void *data_manager(void *arg)
+{
+    #if (DEBUG_LVL > 0)
+        printf("Data Manager Thread is started\n");
+        fflush(stdout);
+    #endif
+
+    int *retval = (int*) malloc(sizeof(int));
+    *retval = THREAD_SUCCESS;
+    FILE *fp_sensor_map = fopen("room_sensor.map", "r");
+    
+    datamgr_init_arg_t datamgr_init_arg = {
+        .ipc_pipe_fd = fds,
+        .pipe_mutex = &ipc_pipe_mutex,
+        .sbuffer_flag = &sbuffer_open,
+        .sbuffer_rwlock = &sbuffer_open_rwlock,
+        .connmgr_sensor_to_drop = &connmgr_sensor_to_drop,
+        .connmgr_drop_conn_mutex = &connmgr_drop_conn_mutex,
+        .storagemgr_fail_flag = &storagemgr_failed,
+        .storagemgr_failed_rwlock = &storagemgr_failed_rwlock,
+        .status = retval,
+        .id = *((int*) &arg),
+    };
+
+    datamgr_init(&datamgr_init_arg);
+    datamgr_parse_sensor_files(fp_sensor_map, &buffer);
+    datamgr_print_summary();
+    datamgr_free();
+    
+    fclose(fp_sensor_map);
+
+    #if (DEBUG_LVL > 0)
+    printf("Data Manager is stopped\n");
+    fflush(stdout);
+    #endif
+
+    pthread_exit(retval);
+}
+

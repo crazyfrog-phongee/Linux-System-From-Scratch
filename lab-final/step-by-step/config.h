@@ -32,7 +32,7 @@
 		#define STORAGE_INIT_ATTEMPTS 3
 	#endif
 
-	#define NUM_THREADS 1
+	#define NUM_THREADS 2
 	#define READER_THREADS 2
 
 	#define THREAD_SUCCESS 0

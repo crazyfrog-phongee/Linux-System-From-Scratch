@@ -111,6 +111,14 @@ void connmgr_listen(int port_number, sbuffer_t **buffer)
     int num_conn = 0, sbuffer_insertions = 0;
     int bytes;
     int poll_ret, tcp_conn_ret, tcp_ret, sbuffer_ret;
+
+    /**
+     * Loop for waiting incoming connection or incoming data 
+     * On success, poll() returns a nonnegative value which is the number of elements in the 
+     * pollfds whose revents fields have been set to a nonzero value (indicating an event or an error).
+     * poll() return the number of available file description, or 0 if timeout, or -1 if on error 
+     * \note it waits for one of a set of file descriptors to become ready to perform I/O. 
+    */
     while ((poll_ret = poll(poll_fds, (num_conn + 1), TIMEOUT * 1000)) || num_conn)
     {
         pthread_rwlock_rdlock(storagemgr_failed_rwlock);    /* Putting inside the loop does not force storagemgr to hang until poll elapses TIMEOUT seconds */
@@ -175,12 +183,12 @@ void connmgr_listen(int port_number, sbuffer_t **buffer)
             poll_ret--;
         }
         /* Determine which the client's file descriptor is readable */
-        for (int i = 1; i < (num_conn + 1) && poll_ret > 0; i++) /* poll_res indicates number of structures, stop looping when that number is reached */
+        for (int i = 1; i < (num_conn + 1) && poll_ret > 0; i++) /* poll_ret indicates number of structures, stop looping when that number is reached */
         {
             dummy.sd = poll_fds[i].fd;                                /* Find corresponding client, based on the sd */ 
-            node = dpl_get_reference_of_element(socket_list, &dummy); /* Get corresponding element from dplist */ 
+            node = dpl_get_reference_of_element(socket_list, &dummy); /* Get corresponding element from socket_list */ 
             client = (node != NULL) ? (struct tcpsock_dpl_el *)dpl_get_element_of_reference(node) : NULL;
-            if (client != NULL && ((client->last_active + (sensor_ts_t)TIMEOUT) > (sensor_ts_t)time(NULL)) && (poll_fds[i].revents & POLLIN)) // If there is data available from client socket and socket is non NULL and has not timed out yet
+            if (client != NULL && ((client->last_active + (sensor_ts_t)TIMEOUT) > (sensor_ts_t)time(NULL)) && (poll_fds[i].revents & POLLIN)) /* If there is data available to read from client socket and socket is non NULL and has not timed out yet */
             {
                 #if (DEBUG_LVL > 1)
                     printf("Receiving data from %d peer of %d total\n", i, num_conn);
@@ -198,9 +206,9 @@ void connmgr_listen(int port_number, sbuffer_t **buffer)
                 {
                     client->last_active = (sensor_ts_t)time(NULL); /* Make sure to update last_active only when receiving is successful */
                     if (client->sensor == 0)
-                        client->sensor = data.id;
-                    sbuffer_ret = sbuffer_insert(*buffer, &data); /* Sbuffer implementation takes care of thread safety */
+                        client->sensor = data.id; /* Update Sensor ID Client for the first incoming data */
 
+                    sbuffer_ret = sbuffer_insert(*buffer, &data); /* Sbuffer implementation takes care of thread safety */
                     if (sbuffer_ret == SBUFFER_SUCCESS) // this block is purely for debugging
                     {
                         sbuffer_insertions++;
@@ -227,6 +235,7 @@ void connmgr_listen(int port_number, sbuffer_t **buffer)
                 }
             }
 
+            /* Drop connection */
             pthread_mutex_lock(connmgr_drop_conn_mutex);
             if ((client != NULL && client->sensor == *connmgr_sensor_to_drop) || (poll_fds[i].revents & POLLHUP) || (poll_fds[i].events == -1) || (client != NULL && ((client->last_active + (sensor_ts_t)TIMEOUT) < (sensor_ts_t)time(NULL))) || client == NULL) // If peer terminated connection or connection timed out for existing socket or no element was found stop listening to this descriptor, remove file descriptor from the list
             {

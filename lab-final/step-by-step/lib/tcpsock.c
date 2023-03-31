@@ -233,7 +233,8 @@ int tcp_receive(tcpsock_t *socket, void *buffer, int *buf_size)
         *buf_size = 0;
         return TCP_NO_ERROR;
     }
-    *buf_size = recv(socket->sd, buffer, *buf_size, 0);
+    /* Receive a message from a socket */
+    *buf_size = recv(socket->sd, buffer, *buf_size, 0); /* Return the length of the message on successful completion */
     TCP_DEBUG_PRINTF(*buf_size == 0, "Recv() : no connection to peer\n");
     TCP_ERR_HANDLER(*buf_size == 0, return TCP_CONNECTION_CLOSED);
     TCP_DEBUG_PRINTF((*buf_size < 0) && (errno == ENOTCONN), "Recv() : no connection to peer\n");

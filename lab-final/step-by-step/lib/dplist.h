@@ -238,7 +238,13 @@ dplist_t *dpl_remove_element(dplist_t *list, void *element, bool free_element);
 // ---- you can add your extra operators here ----//
 dplist_node_t *dpl_get_reference_if_member(dplist_t *list, dplist_node_t *reference);
 dplist_t *dpl_remove_node(dplist_t *list, dplist_node_t *dummy, bool free_element);
+
+/** Returns the list element contained in the list node with refenrence 'refenrence' in the list.
+ * \param reference a pointer to a certain node in the list
+ * \return a pointer to the element at the given index or NULL
+ */
 void * dpl_get_element_of_reference(dplist_node_t * reference);
+
 void dpl_print_heap(dplist_t * list);
 
 #endif // _DPLIST_H_
