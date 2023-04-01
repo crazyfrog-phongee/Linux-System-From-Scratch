@@ -19,28 +19,33 @@ typedef struct sbuffer_data sbuffer_data_t;
 
 /**
  * Allocates and initializes a new shared buffer
- * Returns SBUFFER_SUCCESS on success and SBUFFER_FAILURE if an error occured
- **/
+ * \param buffer a double pointer to the buffer that needs to be initialized
+ * \return SBUFFER_SUCCESS on success and SBUFFER_FAILURE if an error occurred
+ */
 int sbuffer_init(sbuffer_t ** buffer);
 
 /**
  * All allocated resources are freed and cleaned up
- * Returns SBUFFER_SUCCESS on success and SBUFFER_FAILURE if an error occured
- **/
+ * \param buffer a double pointer to the buffer that needs to be freed
+ * \return SBUFFER_SUCCESS on success and SBUFFER_FAILURE if an error occurred
+ */
 int sbuffer_free(sbuffer_t ** buffer);
 
 /**
- * Removes the first data in 'buffer' (at the 'head') and returns this data as '*data'  
- * 'data' must point to allocated memory because this functions doesn't allocated memory
- * If 'buffer' is empty, the function doesn't block until new data becomes available but returns SBUFFER_NO_DATA
- * Returns SBUFFER_SUCCESS on success and SBUFFER_FAILURE if an error occured
- **/
+ * Removes the first sensor data in 'buffer' (at the 'head') and returns this sensor data as '*data'
+ * If 'buffer' is empty, the function doesn't block until new sensor data becomes available but returns SBUFFER_NO_DATA
+ * \param buffer a pointer to the buffer that is used
+ * \param data a pointer to pre-allocated sensor_data_t space, the data will be copied into this structure. No new memory is allocated for 'data' in this function.
+ * \return SBUFFER_SUCCESS on success and SBUFFER_FAILURE if an error occurred
+ */
 int sbuffer_remove(sbuffer_t * buffer, sensor_data_t * data);
 
-/** 
- * Inserts the data in 'data' at the end of 'buffer' (at the 'tail')
- * Returns SBUFFER_SUCCESS on success and SBUFFER_FAILURE if an error occured
- **/
+/**
+ * Inserts the sensor data in 'data' at the end of 'buffer' (at the 'tail')
+ * \param buffer a pointer to the buffer that is used
+ * \param data a pointer to sensor_data_t data, that will be copied into the buffer
+ * \return SBUFFER_SUCCESS on success and SBUFFER_FAILURE if an error occured
+*/
 int sbuffer_insert(sbuffer_t * buffer, sensor_data_t * data);
 
 /**

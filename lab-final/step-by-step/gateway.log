@@ -1,6 +1,18 @@
-0 1680237474 Connection Manager: started server successfully
-1 1680237474 Data Manager: started and parsed room_sensor.map successfully
-2 1680237474 Data Manager: signalled to terminate by Storage Manager
-3 1680237474 Data Manager: successfully cleaned up
-4 1680237489 Connection Manager: stopped successfully
-5 1680237489 (Pipe end of pipe): Pipe between parent (11034) and child (11035) terminated normally
+0 1680330179 Connection Manager: started server successfully
+1 1680330179 Storage Manager: Connected to SQL server
+2 1680330180 Data Manager: started and parsed room_sensor.map successfully
+3 1680330180 Storage Manager: New table SensorData created
+4 1680330181 Connection Manager: new connection received
+5 1680330181 Storage Manager: Inserted new reading in SensorData
+6 1680330183 Storage Manager: Inserted new reading in SensorData
+7 1680330185 Storage Manager: Inserted new reading in SensorData
+8 1680330187 Storage Manager: Inserted new reading in SensorData
+9 1680330189 Storage Manager: Inserted new reading in SensorData
+10 1680330191 Storage Manager: Inserted new reading in SensorData
+11 1680330193 Storage Manager: Inserted new reading in SensorData
+12 1680330194 Connection Manager: lost connection with
+13 1680330194 Connection Manager: connection to 15 closed
+14 1680330209 Connection Manager: stopped successfully
+15 1680330209 Storage Manager: Disconnected from SQL server
+16 1680330209 Data Manager: successfully cleaned up
+17 1680330209 (Pipe end of pipe): Pipe between parent (21929) and child (21930) terminated normally

@@ -1,42 +1,4 @@
-/***************************************************************************************************
- *
- * FileName:        sbuffer.c
- * Comment:         Shared buffer prototypes with thread-safe implementation
- * Dependencies:    Header (.h) files sbuffer.h
- *
- *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * Author                       Date            Version       Comment
- *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * Maxim Yudayev	            22/12/2019      0.1           Template copied from Toledo
- *                              25/12/2019      1.0           Seemingly no issues when multithreading
- *                                                            When sleeping threads (to simulate)
- *                                                            waiting on IO, no data corruption occurs
- *                                                            but Valgrind still complains despite of
- *                                                            no memory leaks
- *                              07/01/2020      2.0           Final improvements to sbuffer, no Valgrind
- *                                                            erros, leaks or seg faults
- *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * TODO                         Date            Finished      Comment
- *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * 1) Make functions thread     24/12/2019      25/12/2019    Chose the read/write lock for shared
- * safe and configure                                         buffer itself and 2 mutexes for 
- * synchronization                                            implementator program
- * (free, push, pop)
- * 2) Call sbuffer_remove       25/12/2019      25/12/2019    For higher level caller this change makes
- * internally from sbuffer_pop                                no difference
- * since it is now allowed to
- * change function signatures,
- * only add new ones
- * 3) Adjust implementation for 25/12/2019      25/12/2019
- * proposed sbuffer data
- * encapsulation
- *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *
- ***************************************************************************************************/
 
-/**
- * Includes
- **/
 #define _GNU_SOURCE
 #define BUILDING_GATEWAY
 #include <stdlib.h>
@@ -54,7 +16,7 @@
  **/
 struct sbuffer_data {
     sensor_data_t data;
-    int read_by[READER_THREADS]; // labeling to identify when the message was read by both threads and can be removed
+    int read_by[READER_THREADS]; /* labeling to identify when the message was read by both threads and can be removed */
 };
 
 typedef struct sbuffer_node {
