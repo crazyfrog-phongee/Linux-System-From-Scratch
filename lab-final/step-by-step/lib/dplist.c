@@ -1,32 +1,4 @@
-/**************************************************************************************************************************
- *
- * FileName:        dplist.c
- * Comment:         My Double Linked List Implementation
- * Dependencies:    Header (.h) files if applicable, see below.
- *
- *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * Author                       		    Date                Version             Comment
- *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * Maxim Yudayev	            		    28/10/2019          0.1                 Successful upload to labtools.groept.be
- * 										    30/10/2019			0.2					Implementation of Ex5 functions
- *                                          30/11/2019          0.3                 Several functions updated to remove bugs
- *                                                                                  Added Makefile and separated library
- * 																				    source code for modularity
- *                                          02/12/2019          0.4                 Removed bug and errors from insert_sorted
- *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * TODO                         		    Date                Finished
- *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * 1) Implement extra functions			    30/10/2019          30/10/2019
- * 2) Comment code thoroughly               30/10/2019          30/10/2019          Updated on 30/11/2019
- * 3) Consider replacing empty-bodied for's 30/10/2019          -
- * 4) Refactor code, optimize functions     30/10/2019          -
- *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *
- *************************************************************************************************************************/
 
-/**
- * Includes
- **/
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>

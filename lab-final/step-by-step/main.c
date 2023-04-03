@@ -119,8 +119,8 @@ int main(int argc, char const *argv[])
         fclose(log_data); /* Close log file */
 
         #if (DEBUG_LVL > 0)
-                printf(CHILD_POS "Child process (%d) of parent (%d) is terminating...\n", child_pid, parent_pid);
-                fflush(stdout);
+            printf(CHILD_POS "Child process (%d) of parent (%d) is terminating...\n", child_pid, parent_pid);
+            fflush(stdout);
         #endif
 
         exit(EXIT_SUCCESS);
@@ -258,11 +258,11 @@ void *storage_manager(void *arg)
     DBCONN *db;
     int attempts = 0;
 
-#if (DEBUG_LVL > 0)
-    printf("Storage Manager is started\n");
-    printf("Version of SQLite database: %s\n", sqlite3_libversion());
-    fflush(stdout);
-#endif
+    #if (DEBUG_LVL > 0)
+        printf("Storage Manager is started\n");
+        printf("Version of SQLite database: %s\n", sqlite3_libversion());
+        fflush(stdout);
+    #endif
 
     storagemgr_init_arg_t storage_int_arg = {
         .ipc_pipe_fd = fds,

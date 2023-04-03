@@ -21,7 +21,7 @@
 	#define CHILD_POS "\t\t\t"
 
 	#ifndef MAX_CONN
-		#define MAX_CONN 5 // state the max. number of connections the server will handle before exiting
+		#define MAX_CONN 5 /* state the max. number of connections the server will handle before exiting */
 	#endif
 
 	#ifndef RUN_AVG_LENGTH
@@ -51,7 +51,7 @@
 
 typedef uint16_t sensor_id_t;
 typedef double sensor_value_t;
-typedef time_t sensor_ts_t; // UTC timestamp as returned by time() - notice that the size of time_t is different on 32/64 bit machine
+typedef time_t sensor_ts_t; /* UTC timestamp as returned by time() - notice that the size of time_t is different on 32/64 bit machine */
 
 typedef struct
 {

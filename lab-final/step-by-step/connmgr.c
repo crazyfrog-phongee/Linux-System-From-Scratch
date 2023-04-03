@@ -195,11 +195,11 @@ void connmgr_listen(int port_number, sbuffer_t **buffer)
                     fflush(stdout);
                 #endif
 
-                bytes = sizeof(data.id); // read sensor ID
+                bytes = sizeof(data.id); /* read sensor ID */
                 tcp_ret = tcp_receive(client->sock_ptr, (void *)&data.id, &bytes);
-                bytes = sizeof(data.value); // read temperature
+                bytes = sizeof(data.value); /* read temperature */
                 tcp_ret = tcp_receive(client->sock_ptr, (void *)&data.value, &bytes);
-                bytes = sizeof(data.ts); // read timestamp
+                bytes = sizeof(data.ts); /* read timestamp */
                 tcp_ret = tcp_receive(client->sock_ptr, (void *)&data.ts, &bytes);
 
                 if ((tcp_ret == TCP_NO_ERROR) && bytes)
@@ -209,7 +209,8 @@ void connmgr_listen(int port_number, sbuffer_t **buffer)
                         client->sensor = data.id; /* Update Sensor ID Client for the first incoming data */
 
                     sbuffer_ret = sbuffer_insert(*buffer, &data); /* Sbuffer implementation takes care of thread safety */
-                    if (sbuffer_ret == SBUFFER_SUCCESS) // this block is purely for debugging
+                    
+                    if (sbuffer_ret == SBUFFER_SUCCESS) /* This block is purely for debugging */
                     {
                         sbuffer_insertions++;
 
@@ -302,7 +303,7 @@ void connmgr_free()
 
     if(server != NULL && tcp_close(&server) != TCP_NO_ERROR) 
     {
-        *retval = CONNMGR_SERVER_CLOSE_ERROR; // close master socket if any
+        *retval = CONNMGR_SERVER_CLOSE_ERROR; /* close master socket if any */
         
         asprintf(&send_buf, "%ld Connection Manager: failed to stop", time(NULL));
         write_to_pipe(ipc_pipe_mutex, pfds, send_buf);
@@ -311,15 +312,15 @@ void connmgr_free()
         asprintf(&send_buf, "%ld Connection Manager: stopped successfully", time(NULL));        
         write_to_pipe(ipc_pipe_mutex, pfds, send_buf);
     }
-    if(poll_fds != NULL) free(poll_fds); // Clean up allocated socket descriptor array if any
-    if(socket_list != NULL) dpl_free(&socket_list, true); // Clean up allocated tcpsock_dpl_el dplist if any
+    if(poll_fds != NULL) free(poll_fds); /* Clean up allocated socket descriptor array if any */
+    if(socket_list != NULL) dpl_free(&socket_list, true); /* Clean up allocated tcpsock_dpl_el dplist if any */
 
-    pthread_rwlock_wrlock(sbuffer_open_rwlock); // lock mutex to sbuffer_open shared data
+    pthread_rwlock_wrlock(sbuffer_open_rwlock); /* lock mutex to sbuffer_open shared data */
     #if (DEBUG_LVL > 0)
     printf("Server is shutting down. Closing shared buffer\n");
     fflush(stdout);
     #endif
-    *sbuffer_open = 0; // indicate reader threads the end of buffer
+    *sbuffer_open = 0; /* Indicate reader threads the end of buffer */
     pthread_rwlock_unlock(sbuffer_open_rwlock);
 }
 
